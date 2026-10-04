@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect x="96" y="96" width="320" height="320" rx="76" fill="#FFFFFF"/>
+  <text x="256" y="336" font-family="DejaVu Sans, Verdana, Arial, sans-serif" font-weight="bold"
+        font-size="180" letter-spacing="-8" text-anchor="middle" fill="#2B2350">TS</text>
+</svg>

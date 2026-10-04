@@ -1,0 +1,178 @@
+@import 'tailwindcss';
+
+@theme {
+  /* brand gradient stops */
+  --color-rose: #f7a1c6;
+  --color-lavender: #c3a5d8;
+  --color-periwinkle: #90bfe6;
+  --color-cyan: #52d6f7;
+  --color-ink: #0b0714;
+
+  --font-display: 'Bricolage Grotesque', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The four brand stops in the exact order the brief specifies. */
+@utility grad-text {
+  background-image: linear-gradient(to right, #f7a1c6, #c3a5d8, #90bfe6, #52d6f7);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/**
+ * Same gradient, but continuous across a run of per-character spans.
+ *
+ * Each character paints its own background box, so a plain grad-text on them
+ * restarts the ramp on every letter. --grad-w is the width of the whole line
+ * and --cx is the character's offset into it, both measured after layout, so
+ * the ramp reads as one sweep across the line.
+ */
+@utility grad-char {
+  background-image: linear-gradient(to right, #f7a1c6, #c3a5d8, #90bfe6, #52d6f7);
+  background-size: var(--grad-w, 100%) 100%;
+  background-position: calc(-1 * var(--cx, 0px)) 0;
+  background-repeat: no-repeat;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@layer base {
+  html {
+    /* --stage-bg is written every frame by the palette engine */
+    background-color: var(--stage-bg, #0b0714);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--stage-bg, #0b0714);
+    color: #f4eef8;
+    font-family: var(--font-sans);
+    /* clip, not hidden: `hidden` would turn the body into a scroll container
+       and every `position: sticky` stage inside it would stop pinning */
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* the custom mesh cursor replaces the OS one on pointer devices */
+  html[data-mesh-cursor='on'],
+  html[data-mesh-cursor='on'] body {
+    cursor: none;
+  }
+  html[data-mesh-cursor='on'] a,
+  html[data-mesh-cursor='on'] button {
+    cursor: none;
+  }
+
+  ::selection {
+    background: #c3a5d8;
+    color: #14091f;
+  }
+}
+
+/* Lenis drives real scroll position, so the native behaviour must stand down. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+@layer components {
+  /* Every stage pins its own viewport with sticky positioning and lets
+     ScrollTrigger scrub the animation. No pin-spacer reflow, so text
+     stays crisp and the compositor never stalls. */
+  .stage {
+    position: relative;
+  }
+  .stage__pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .shell {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 4rem);
+  }
+
+  .eyebrow {
+    font-size: clamp(0.68rem, 0.9vw, 0.78rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: rgb(244 238 248 / 0.55);
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+  }
+
+  /* Links that grow a gradient underline on hover. */
+  .link {
+    position: relative;
+    display: inline-block;
+  }
+  .link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.12em;
+    height: 1px;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    background-image: linear-gradient(to right, #f7a1c6, #c3a5d8, #90bfe6, #52d6f7);
+    transition: transform 0.42s var(--ease-out-expo);
+  }
+  .link:hover::after,
+  .link:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+/* Screen-reader-only, but focusable (used by the skip link). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
