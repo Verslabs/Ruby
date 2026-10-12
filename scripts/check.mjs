@@ -9,7 +9,12 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const OUT = resolve(ROOT, 'shots')
 const URL = process.env.URL || 'http://localhost:4173/'
 const CHROME =
-  process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+  process.env.CHROME_PATH ||
+  {
+    win32: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    darwin: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  }[process.platform] ||
+  '/usr/bin/google-chrome'
 
 mkdirSync(OUT, { recursive: true })
 

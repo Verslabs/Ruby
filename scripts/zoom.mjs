@@ -16,7 +16,13 @@ mkdirSync(SHOTS, { recursive: true })
 const REGION = { x: 520, y: 60, w: 840, h: 600 }
 
 const browser = await puppeteer.launch({
-  executablePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  executablePath:
+    process.env.CHROME_PATH ||
+    {
+      win32: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
+      darwin: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    }[process.platform] ||
+    '/usr/bin/google-chrome',
   headless: 'new',
   args: ['--no-sandbox', '--enable-unsafe-swiftshader', '--use-gl=angle', '--hide-scrollbars'],
 })

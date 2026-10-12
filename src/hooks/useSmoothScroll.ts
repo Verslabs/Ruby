@@ -43,19 +43,21 @@ export function useSmoothScroll() {
 
     lenis.on('scroll', ScrollTrigger.update)
 
-    ScrollTrigger.create({
+    const triggers: ScrollTrigger[] = []
+
+    triggers.push(ScrollTrigger.create({
       start: 0,
       end: 'max',
       onUpdate: (self) => {
         scroll.progress = self.progress
         rawVelocity = self.getVelocity()
       },
-    })
+    }))
 
     STAGE_ORDER.forEach((id) => {
       const el = document.getElementById(`stage-${id}`)
       if (!el) return
-      ScrollTrigger.create({
+      triggers.push(ScrollTrigger.create({
         trigger: el,
         start: 'top top',
         end: 'bottom bottom',
@@ -68,7 +70,7 @@ export function useSmoothScroll() {
           audio.unlock()
           audio.play('transition')
         },
-      })
+      }))
     })
 
     const tick = (time: number) => {
@@ -95,6 +97,9 @@ export function useSmoothScroll() {
       window.removeEventListener('resize', measure)
       window.removeEventListener('load', measure)
       gsap.ticker.remove(tick)
+      // without this a remount (StrictMode does one in dev) leaves the old
+      // triggers alive, so every stage change fires twice
+      triggers.forEach((t) => t.kill())
       lenis.destroy()
       lenisInstance = null
       delete window.__rubyScrollTo

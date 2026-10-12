@@ -23,6 +23,10 @@ export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   const fireBurst = useCallback(() => setBurstKey((k) => k + 1), [])
+  // stable, because the drawer's open effect depends on onClose and would
+  // otherwise re-run (re-grabbing focus, replaying the click) on every render
+  const openDrawer = useCallback(() => setDrawerOpen(true), [])
+  const closeDrawer = useCallback(() => setDrawerOpen(false), [])
 
   // first gesture anywhere unlocks the audio context
   const unlock = useCallback(() => audio.unlock(), [])
@@ -42,7 +46,7 @@ export default function App() {
       <Grain />
       <ScrollProgress />
       <Cursor />
-      <Nav onOpenContact={() => setDrawerOpen(true)} />
+      <Nav onOpenContact={openDrawer} />
       <StageRail />
 
       {/* every stage is pointer-transparent except its own controls, so the
@@ -52,10 +56,10 @@ export default function App() {
         <About />
         <Stack />
         <Experience />
-        <Contact onBurst={fireBurst} onOpenDrawer={() => setDrawerOpen(true)} />
+        <Contact onBurst={fireBurst} onOpenDrawer={openDrawer} />
       </main>
 
-      <ContactDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <ContactDrawer open={drawerOpen} onClose={closeDrawer} />
     </div>
   )
 }

@@ -14,7 +14,12 @@ mkdirSync(OUT, { recursive: true })
 
 const URL_ = process.env.URL || 'http://localhost:4173/'
 const CHROME =
-  process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+  process.env.CHROME_PATH ||
+  {
+    win32: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    darwin: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  }[process.platform] ||
+  '/usr/bin/google-chrome'
 
 const results = []
 const record = (name, pass, detail = '') => {
@@ -73,7 +78,8 @@ async function meanDiff(page, aBuf, bBuf) {
       sum += Math.abs(da[i] - db[i]) + Math.abs(da[i + 1] - db[i + 1]) + Math.abs(da[i + 2] - db[i + 2])
     }
     return sum / (da.length / 4) / 3
-  }, aBuf.toString('base64'), bBuf.toString('base64'))
+    // puppeteer v22+ screenshots are Uint8Array, whose toString() is not base64
+  }, Buffer.from(aBuf).toString('base64'), Buffer.from(bBuf).toString('base64'))
 }
 
 // --------------------------------------------------------------- drag test

@@ -43,9 +43,13 @@ export function WaveBackdrop({ opacity }: Props) {
     [],
   )
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     const u = material.uniforms
     const damp = Math.min(1, delta * 5)
+
+    // the shader works in aspect-corrected space, so ribbons and the pointer
+    // warp stretch with the viewport unless this tracks the canvas
+    u.uAspect.value = state.size.width / Math.max(1, state.size.height)
 
     u.uTime.value = scroll.clock
     u.uEnergy.value += (Math.abs(scroll.velocity) - u.uEnergy.value) * damp

@@ -44,6 +44,9 @@ export function Hero() {
       })
     }
     alignGradient()
+    // the first pass measures the fallback font; Bricolage arrives later with
+    // different glyph widths, which would leave the ramp misaligned
+    document.fonts?.ready.then(alignGradient)
     window.addEventListener('resize', alignGradient)
 
     const ctx = gsap.context(() => {

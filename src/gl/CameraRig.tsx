@@ -31,7 +31,7 @@ export function CameraRig() {
     const delta = Math.min(rawDelta, 0.05)
     const speed = Math.abs(scroll.velocity)
 
-    desired.set(0, 0, 9)
+    desired.set(0, 0, 0)
     let total = 0
     for (const id of STAGE_ORDER) {
       const w = weightFor(id)
@@ -39,7 +39,10 @@ export function CameraRig() {
       total += w
       desired.addScaledVector(STAGE_VANTAGES[id], w)
     }
+    // weighted average of the vantages; the fallback only applies before the
+    // stage ranges have been measured
     if (total > 0) desired.multiplyScalar(1 / total)
+    else desired.set(0, 0, 9)
 
     // hero pulls back as its headline reveals
     desired.z += localProgress('hero') * 2.6

@@ -49,10 +49,12 @@ export function weightFor(id: StageId): number {
   if (!range) return 0
   const [a, b] = range
   const p = scroll.progress
-  // the first stage starts at exactly 0, so it must be allowed through here
-  if (p < a || p >= b) return 0
+  // the first stage starts at exactly 0 and the last ends at exactly 1, so
+  // both ends of the document must be allowed through here
+  const last = b >= 1
+  if (p < a || (last ? p > b : p >= b)) return 0
   const fadeIn = a === 0 ? 1 : smoothstep(a, a + FADE, p)
-  const fadeOut = 1 - smoothstep(b - FADE, b, p)
+  const fadeOut = last ? 1 : 1 - smoothstep(b - FADE, b, p)
   return fadeIn * fadeOut
 }
 

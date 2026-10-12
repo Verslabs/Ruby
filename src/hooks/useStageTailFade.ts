@@ -41,7 +41,9 @@ export function useStageTailFade(stageId: string, selector = '[data-stage-body]'
         immediateRender: false,
         scrollTrigger: { trigger: el, start: 'bottom bottom', end: 'bottom top', scrub: true },
       })
-    })
+      // scoped to this stage, otherwise the selector matches every stage body
+      // on the page and each stage's triggers fight over all of them
+    }, el)
 
     return () => ctx.revert()
   }, [stageId, selector])

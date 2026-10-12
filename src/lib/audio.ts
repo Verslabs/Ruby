@@ -14,6 +14,7 @@ type Sfx = 'click' | 'hover' | 'transition'
  */
 class AudioEngine {
   private ambient: Howl | null = null
+  private ambientId: number | null = null
   private sfx: Partial<Record<Sfx, Howl>> = {}
   private started = false
   private built = false
@@ -30,6 +31,13 @@ class AudioEngine {
     }
     // Silent until asked for. A first-time visitor gets sound, never noise.
     this.muted = stored === null ? true : stored === 'true'
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) this.suspend()
+        else this.resume()
+      })
+    }
   }
 
   private persist() {
@@ -58,7 +66,11 @@ class AudioEngine {
 
   playAmbient() {
     if (!this.ambient || this.muted) return
-    if (!this.ambient.playing()) this.ambient.play()
+    // Track the one ambient sound by id. A bare play() while the file is still
+    // loading queues a brand new sound each call, because playing() reads
+    // false until load, so unmuting before the WAV arrived stacked two loops.
+    if (this.ambientId === null) this.ambientId = this.ambient.play()
+    else if (!this.ambient.playing(this.ambientId)) this.ambient.play(this.ambientId)
     this.started = true
   }
 

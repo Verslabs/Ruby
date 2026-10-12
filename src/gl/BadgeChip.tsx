@@ -76,7 +76,7 @@ export function BadgeChip({ id, position, rotation = [0.2, 0.3, 0], scale = 1, v
       // the logo plane is a sibling of the plaque, so handle it separately
       if (face.current) {
         const target = face.current as unknown as { raycast: unknown }
-        target.raycast = on ? faceRaycast : () => undefined
+        target.raycast = on ? faceRaycast.current : () => undefined
       }
     },
     [raycasters],
