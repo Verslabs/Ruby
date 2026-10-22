@@ -7,6 +7,7 @@ import { audio } from '../lib/audio'
 import { pushRipple, scroll } from '../lib/scrollState'
 import { asset } from '../lib/asset'
 import { capturePointer, normalizedCanvasPoint, releasePointer } from './pointer'
+import { hash01 } from './phase'
 
 type Props = {
   id: string
@@ -76,7 +77,7 @@ export function BadgeChip({ id, position, rotation = [0.2, 0.3, 0], scale = 1, v
       // the logo plane is a sibling of the plaque, so handle it separately
       if (face.current) {
         const target = face.current as unknown as { raycast: unknown }
-        target.raycast = on ? faceRaycast : () => undefined
+        target.raycast = on ? faceRaycast.current : () => undefined
       }
     },
     [raycasters],
@@ -91,7 +92,7 @@ export function BadgeChip({ id, position, rotation = [0.2, 0.3, 0], scale = 1, v
   const velocity = useMemo(() => new Vector3(), [])
   const dragging = useRef(false)
   const lastMove = useRef(0)
-  const phase = useMemo(() => Math.random() * Math.PI * 2, [])
+  const phase = useMemo(() => hash01(id) * Math.PI * 2, [id])
   const lift = useRef(0)
 
   const setCursor = (value: string) => {

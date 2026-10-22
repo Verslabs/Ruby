@@ -21,7 +21,7 @@ export function Stack() {
 
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: '#stage-stack',
+          trigger: root.current,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.7,

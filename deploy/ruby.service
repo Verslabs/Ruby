@@ -1,0 +1,31 @@
+# systemd unit for the Ruby site (portfolio + blog), one Node process.
+#
+#   sudo cp deploy/ruby.service /etc/systemd/system/ruby.service
+#   sudo systemctl daemon-reload && sudo systemctl enable --now ruby
+#
+# Paths assume the app lives in /srv/ruby, runs as the `ruby` user, and keeps
+# posts in /var/lib/ruby. Change them here if yours differ.
+
+[Unit]
+Description=Ruby portfolio and blog
+After=network.target
+
+[Service]
+Type=simple
+User=ruby
+Group=ruby
+WorkingDirectory=/srv/ruby
+EnvironmentFile=/etc/ruby/ruby.env
+ExecStart=/usr/bin/node server/index.mjs
+Restart=on-failure
+RestartSec=3
+
+# The app only ever writes to its data folder.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/ruby
+
+[Install]
+WantedBy=multi-user.target

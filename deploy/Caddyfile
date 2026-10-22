@@ -1,0 +1,17 @@
+# Caddy site block. Replace example.com with your domain; Caddy gets and renews
+# the HTTPS certificate on its own.
+#
+#   sudo cp deploy/Caddyfile /etc/caddy/Caddyfile   (or paste the block into yours)
+#   sudo systemctl reload caddy
+
+example.com {
+	encode zstd gzip
+	request_body {
+		max_size 16MB
+	}
+	reverse_proxy 127.0.0.1:4000
+}
+
+www.example.com {
+	redir https://example.com{uri} permanent
+}

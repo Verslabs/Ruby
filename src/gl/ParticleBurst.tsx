@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, BufferAttribute, BufferGeometry, Color, Points, ShaderMaterial } from 'three'
 import { samplePalettes } from '../lib/palettes'
 import { scroll } from '../lib/scrollState'
+import { hash01 } from './phase'
 
 const COUNT = 900
 
@@ -30,7 +31,7 @@ export function ParticleBurst({ trigger, origin = [0, 0, 0] }: Props) {
 
     for (let i = 0; i < COUNT; i++) {
       lives[i] = 0
-      seeds[i] = Math.random()
+      seeds[i] = hash01(`particle-${i}`)
     }
 
     const geometry = new BufferGeometry()

@@ -1,0 +1,39 @@
+/* source('..') keeps Tailwind scanning blog/src only, not the portfolio */
+@import 'tailwindcss' source('..');
+@import '../../../src/styles/theme.css';
+@plugin '@tailwindcss/typography';
+
+@layer base {
+  html {
+    background-color: #0b0714;
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    background:
+      radial-gradient(60rem 40rem at 85% -10%, rgb(247 161 198 / 0.12), transparent 60%),
+      radial-gradient(50rem 36rem at -10% 30%, rgb(82 214 247 / 0.08), transparent 60%),
+      #0b0714;
+    background-attachment: fixed;
+    color: #f4eef8;
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: #c3a5d8;
+    color: #14091f;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.5);
+  }
+}

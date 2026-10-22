@@ -7,6 +7,7 @@ import { audio } from '../lib/audio'
 import { pushRipple, scroll } from '../lib/scrollState'
 import { asset } from '../lib/asset'
 import { capturePointer, normalizedCanvasPoint, releasePointer } from './pointer'
+import { hash01 } from './phase'
 
 type Props = {
   url: string
@@ -90,7 +91,7 @@ export function DraggableShape({
   const velocity = useMemo(() => new Vector3(), [])
   const dragging = useRef(false)
   const lastMove = useRef(0)
-  const phase = useMemo(() => Math.random() * Math.PI * 2, [])
+  const phase = useMemo(() => hash01(url) * Math.PI * 2, [url])
 
   const setCursor = (value: string) => {
     gl.domElement.style.cursor = value

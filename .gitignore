@@ -12,6 +12,7 @@ node_modules
 
 # Build output
 dist
+blog/.astro
 dist-ssr
 *.local
 

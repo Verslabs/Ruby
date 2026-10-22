@@ -7,6 +7,7 @@ import { Hero } from './stages/Hero'
 import { About } from './stages/About'
 import { Stack } from './stages/Stack'
 import { Experience } from './stages/Experience'
+import { Blog } from './stages/Blog'
 import { Contact } from './stages/Contact'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
 import { NAV } from './content/copy'
@@ -52,6 +53,7 @@ export default function App() {
         <About />
         <Stack />
         <Experience />
+        <Blog />
         <Contact onBurst={fireBurst} onOpenDrawer={() => setDrawerOpen(true)} />
       </main>
 

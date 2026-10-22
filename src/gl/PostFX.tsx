@@ -23,6 +23,8 @@ export function PostFX() {
   const scene = useThree((s) => s.scene)
   const camera = useThree((s) => s.camera)
   const size = useThree((s) => s.size)
+  // the Viewport lowers dpr under load, so the composer targets must follow it
+  const dpr = useThree((s) => s.viewport.dpr)
 
   const { composer, liquid } = useMemo(() => {
     const c = new EffectComposer(gl)
@@ -39,10 +41,10 @@ export function PostFX() {
   }, [gl, scene, camera])
 
   useEffect(() => {
-    composer.setPixelRatio(Math.min(gl.getPixelRatio(), 2))
+    composer.setPixelRatio(Math.min(dpr, 2))
     composer.setSize(size.width, size.height)
     liquid.uniforms.uAspect.value = size.height > 0 ? size.width / size.height : 1
-  }, [composer, liquid, size, gl])
+  }, [composer, liquid, size, dpr])
 
   useEffect(() => () => composer.dispose(), [composer])
 

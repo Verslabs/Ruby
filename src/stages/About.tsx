@@ -19,7 +19,7 @@ function StepLine({ text }: { text: string }) {
     >
       {words.map((word, j) => (
         <span key={j} className="inline-block overflow-hidden align-bottom">
-          <span className="about-word inline-block will-change-transform">
+          <span className="about-word inline-block">
             {word}
             {j < words.length - 1 ? '\u00A0' : ''}
           </span>
@@ -44,7 +44,7 @@ export function About() {
 
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: '#stage-about',
+          trigger: root.current,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.75,

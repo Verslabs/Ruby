@@ -4,12 +4,13 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  // GitHub Pages serves this repo from https://<user>.github.io/Ruby/, so the
-  // built asset URLs need the subpath. `src/lib/asset.ts` uses BASE_URL to
-  // resolve files from `public/` against it.
-  base: process.env.GITHUB_ACTIONS ? '/Ruby/' : '/',
+  // Served from the domain root on the VPS by server/index.mjs, which also
+  // mounts the Astro blog at /blog/. `src/lib/asset.ts` resolves files from
+  // `public/` against this base.
+  base: '/',
   plugins: [react(), tailwindcss()],
   build: {
+    outDir: 'dist/site',
     // three + drei pull in a lot of optional syntax; keep the warning threshold honest
     chunkSizeWarningLimit: 1200,
   },

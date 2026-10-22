@@ -13,6 +13,7 @@ const STAGE_VANTAGES = {
   about: new Vector3(-1.6, -0.5, 8.0),
   stack: new Vector3(0.9, 0.6, 7.4),
   experience: new Vector3(-0.8, -0.9, 8.8),
+  blog: new Vector3(1.2, 0.3, 8.6),
   contact: new Vector3(0, 0.9, 9.0),
 }
 

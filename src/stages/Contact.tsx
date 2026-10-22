@@ -9,12 +9,6 @@ import { useStageTailFade } from '../hooks/useStageTailFade'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const GITHUB_LINKS = [
-  { handle: 'KitKatsDevelopment', href: 'https://github.com/KitKatsDevelopment' },
-  { handle: 'CollaredKittyCat', href: 'https://github.com/CollaredKittyCat' },
-  { handle: 'ZenomoStudio', href: 'https://github.com/ZenomoStudio' },
-]
-
 type Props = {
   /** parent bumps this to re-fire the 3D particle burst */
   onBurst: () => void
@@ -34,7 +28,7 @@ export function Contact({ onBurst, onOpenDrawer }: Props) {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: '#stage-contact',
+          trigger: root.current,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.7,
@@ -62,7 +56,7 @@ export function Contact({ onBurst, onOpenDrawer }: Props) {
 
   const handleBurst = () => {
     audio.unlock()
-    audio.play('click')
+    audio.play('pop')
     onBurst()
     onOpenDrawer()
   }
@@ -125,7 +119,7 @@ export function Contact({ onBurst, onOpenDrawer }: Props) {
             <div data-contact-panel style={{ visibility: 'hidden' }}>
               <p className="eyebrow mb-5">{CONTACT.linksLabel}</p>
               <ul className="space-y-2.5">
-                {GITHUB_LINKS.map((link) => (
+                {CONTACT.links.map((link) => (
                   <li key={link.handle}>
                     <a
                       href={link.href}

@@ -1,7 +1,7 @@
 import type { StageId } from '../content/copy'
 import { scroll } from './scrollState'
 
-export const STAGE_ORDER: StageId[] = ['hero', 'about', 'stack', 'experience', 'contact']
+export const STAGE_ORDER: StageId[] = ['hero', 'about', 'stack', 'experience', 'blog', 'contact']
 
 type Range = [number, number]
 

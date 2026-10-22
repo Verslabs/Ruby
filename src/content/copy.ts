@@ -118,15 +118,28 @@ export const EXPERIENCE = {
   ],
 } as const
 
+export const BLOG = {
+  label: 'Blog',
+  heading: 'Latest writing',
+  cta: 'View Blog',
+  readCta: 'Read the post',
+  empty: 'Nothing published yet. The first post is on its way.',
+} as const
+
 export const CONTACT = {
   label: 'Contact',
   heading: 'Say hello',
   body: 'Got something that needs building, or you just want to argue about type systems? Either one works.',
   prompt: 'Press the button. It throws confetti at the problem.',
   cta: 'Send it',
-  email: 'hello@ruby.dev',
+  email: 'tyler@verslabs.net',
   emailLabel: 'Email Ruby',
   linksLabel: 'GitHub',
+  links: [
+    { handle: 'KitKatsDevelopment', href: 'https://github.com/KitKatsDevelopment' },
+    { handle: 'CollaredKittyCat', href: 'https://github.com/CollaredKittyCat' },
+    { handle: 'ZenomoStudio', href: 'https://github.com/ZenomoStudio' },
+  ],
 } as const
 
 export const NAV = {
@@ -136,6 +149,7 @@ export const NAV = {
     { id: 'about', label: ABOUT.label },
     { id: 'stack', label: STACK.label },
     { id: 'experience', label: EXPERIENCE.label },
+    { id: 'blog', label: BLOG.label },
     { id: 'contact', label: CONTACT.label },
   ],
   soundOn: 'Turn sound on',
@@ -155,6 +169,7 @@ export const STAGE_LABELS = {
   about: ABOUT.label,
   stack: STACK.label,
   experience: EXPERIENCE.label,
+  blog: BLOG.label,
   contact: CONTACT.label,
 } as const
 

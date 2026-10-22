@@ -4,12 +4,6 @@ import { GithubMark } from './GithubMark'
 import { CONTACT, DRAWER } from '../content/copy'
 import { audio } from '../lib/audio'
 
-const LINKS = [
-  { handle: 'KitKatsDevelopment', href: 'https://github.com/KitKatsDevelopment' },
-  { handle: 'CollaredKittyCat', href: 'https://github.com/CollaredKittyCat' },
-  { handle: 'ZenomoStudio', href: 'https://github.com/ZenomoStudio' },
-]
-
 type Props = {
   open: boolean
   onClose: () => void
@@ -32,13 +26,19 @@ export function ContactDrawer({ open, onClose }: Props) {
       if (e.key === 'Escape') onClose()
     }
     document.addEventListener('keydown', onKey)
-    audio.play('click')
 
     return () => {
       document.removeEventListener('keydown', onKey)
       restoreFocus.current?.focus()
     }
   }, [open, onClose])
+
+  // keyed on `open` alone: the effect above also re-runs when onClose changes
+  const wasOpen = useRef(false)
+  useEffect(() => {
+    if (open !== wasOpen.current) audio.play(open ? 'open' : 'close')
+    wasOpen.current = open
+  }, [open])
 
   return (
     <div
@@ -91,7 +91,7 @@ export function ContactDrawer({ open, onClose }: Props) {
         <div>
           <p className="eyebrow mb-4">{DRAWER.githubLabel}</p>
           <ul className="space-y-2">
-            {LINKS.map((link) => (
+            {CONTACT.links.map((link) => (
               <li key={link.handle}>
                 <a
                   href={link.href}

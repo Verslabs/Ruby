@@ -26,7 +26,7 @@ export function Experience() {
 
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: '#stage-experience',
+          trigger: root.current,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.8,

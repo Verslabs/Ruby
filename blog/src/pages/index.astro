@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro'
+import { formatDate, postUrl, publishedPosts } from '../lib/posts'
+import { blogUrl } from '../lib/urls'
+
+const posts = await publishedPosts()
+---
+
+<Base title="Blog — Ruby">
+  <section class="pb-10 pt-6 md:pb-14 md:pt-12">
+    <p class="eyebrow mb-4">Blog</p>
+    <h1 class="font-display text-[clamp(2.4rem,7vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.03em]">
+      Writing<span class="grad-text">.</span>
+    </h1>
+    <p class="mt-4 max-w-xl text-white/60">Notes on building things, shipping them, and the parts in between.</p>
+  </section>
+
+  {
+    posts.length === 0 ? (
+      <p class="rounded-3xl border border-white/12 bg-white/[0.04] p-6 text-white/60">
+        Nothing published yet. The first post is on its way.
+      </p>
+    ) : (
+      <ul class="grid gap-4 md:gap-5">
+        {posts.map((post) => (
+          <li>
+            <a
+              href={postUrl(post)}
+              class="group flex flex-col gap-5 rounded-3xl border border-white/12 bg-white/[0.04] p-5 transition-colors duration-500 hover:border-white/25 hover:bg-white/[0.075] sm:flex-row md:p-7"
+            >
+              {post.cover && (
+                <img
+                  src={blogUrl(post.cover)}
+                  alt=""
+                  loading="lazy"
+                  class="aspect-[16/10] w-full shrink-0 rounded-2xl object-cover sm:w-48"
+                />
+              )}
+              <div class="min-w-0">
+                <p class="text-sm text-white/45">
+                  <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+                  {post.author && <span> · {post.author}</span>}
+                </p>
+                <h2 class="mt-1.5 font-display text-[clamp(1.3rem,3vw,1.75rem)] font-bold leading-tight tracking-tight text-white/90 transition-colors group-hover:text-white">
+                  {post.title}
+                </h2>
+                <p class="mt-2 leading-relaxed text-white/60">{post.description}</p>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Base>

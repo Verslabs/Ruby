@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro'
+import { formatDate, publishedPost, renderMarkdown } from '../lib/posts'
+import { blogUrl } from '../lib/urls'
+
+const post = await publishedPost(Astro.params.slug ?? '')
+if (!post) Astro.response.status = 404
+---
+
+{
+  post ? (
+    <Base title={`${post.title} — Ruby`} description={post.description}>
+      <article class="pt-4 md:pt-10">
+        <a href={blogUrl()} class="text-sm text-white/50 transition-colors hover:text-white">
+          ← All posts
+        </a>
+
+        <header class="mb-10 mt-8">
+          <p class="text-sm text-white/45">
+            <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+            {post.author && <span> · By {post.author}</span>}
+          </p>
+          <h1 class="mt-2 font-display text-[clamp(2.1rem,6vw,3.6rem)] font-extrabold leading-[1.04] tracking-[-0.03em]">
+            <span class="grad-text">{post.title}</span>
+          </h1>
+          <p class="mt-4 text-lg leading-relaxed text-white/65">{post.description}</p>
+        </header>
+
+        {post.cover && <img src={blogUrl(post.cover)} alt="" class="mb-10 w-full rounded-3xl object-cover" />}
+
+        <div
+          class="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:tracking-tight prose-a:text-[#f7a1c6] prose-code:before:content-none prose-code:after:content-none prose-pre:rounded-2xl prose-pre:border prose-pre:border-white/10 prose-pre:bg-white/[0.04] prose-img:rounded-2xl"
+          set:html={renderMarkdown(post.body)}
+        />
+      </article>
+    </Base>
+  ) : (
+    <Base title="Not found — Ruby">
+      <section class="pt-10">
+        <p class="eyebrow mb-4">404</p>
+        <h1 class="font-display text-[clamp(2rem,5vw,3rem)] font-extrabold tracking-[-0.03em]">
+          That post is not here<span class="grad-text">.</span>
+        </h1>
+        <a href={blogUrl()} class="mt-6 inline-block text-white/70 transition-colors hover:text-white">
+          ← All posts
+        </a>
+      </section>
+    </Base>
+  )
+}

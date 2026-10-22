@@ -1,6 +1,8 @@
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { ACESFilmicToneMapping } from 'three'
+import { PerformanceMonitor } from '@react-three/drei'
+import { ACESFilmicToneMapping, HalfFloatType, Mesh, Texture, WebGLRenderTarget } from 'three'
+import type { Material, Object3D } from 'three'
 import { scroll } from '../lib/scrollState'
 import { asset } from '../lib/asset'
 import { weightFor } from '../lib/stageRanges'
@@ -44,6 +46,49 @@ function Environment() {
       env.dispose()
     }
   }, [scene])
+  return null
+}
+
+/**
+ * Compiles every shader and uploads every texture as soon as the models are
+ * in, so the first scroll into a stage does not stall while the GPU catches
+ * up. compile() skips hidden objects, so everything is shown for the pass
+ * and put back straight after, before a frame is drawn. It compiles against a
+ * target shaped like the composer's, because programs built for the canvas
+ * (tone mapped, sRGB) are not the ones the RenderPass ends up using.
+ */
+function Precompile() {
+  const gl = useThree((s) => s.gl)
+  const scene = useThree((s) => s.scene)
+  const camera = useThree((s) => s.camera)
+
+  useLayoutEffect(() => {
+    const hidden: Object3D[] = []
+    scene.traverse((o) => {
+      if (o.visible) return
+      hidden.push(o)
+      o.visible = true
+    })
+
+    const target = new WebGLRenderTarget(1, 1, { type: HalfFloatType })
+    const previous = gl.getRenderTarget()
+    gl.setRenderTarget(target)
+    gl.compile(scene, camera)
+    gl.setRenderTarget(previous)
+    target.dispose()
+    scene.traverse((o) => {
+      if (!(o instanceof Mesh)) return
+      const materials: Material[] = Array.isArray(o.material) ? o.material : [o.material]
+      for (const m of materials) {
+        for (const value of Object.values(m)) {
+          if (value instanceof Texture) gl.initTexture(value)
+        }
+      }
+    })
+
+    for (const o of hidden) o.visible = false
+  }, [gl, scene, camera])
+
   return null
 }
 
@@ -179,12 +224,19 @@ function ContactBurst({ burstKey }: { burstKey: number }) {
 }
 
 export function Viewport({ burstKey }: { burstKey: number }) {
+  // Every frame is three full-screen passes, so resolution is the main cost.
+  // Start at 1.5x, step up to 2x on machines that hold frame rate easily and
+  // down to 1x on ones that do not.
+  const [maxDpr, setMaxDpr] = useState(1.5)
+
   return (
     <div className="fixed inset-0 z-0" aria-hidden="true">
       <Canvas
-        dpr={[1, 2]}
+        dpr={[1, maxDpr]}
         gl={{
-          antialias: true,
+          // the scene is drawn into the composer's own target, so canvas MSAA
+          // would never reach the screen
+          antialias: false,
           alpha: false,
           powerPreference: 'high-performance',
           // the liquid pass takes over rendering, so the canvas itself does not
@@ -197,6 +249,12 @@ export function Viewport({ burstKey }: { burstKey: number }) {
           gl.toneMappingExposure = 1.05
         }}
       >
+        <PerformanceMonitor
+          onIncline={() => setMaxDpr(2)}
+          onDecline={() => setMaxDpr(1)}
+          flipflops={3}
+          onFallback={() => setMaxDpr(1)}
+        />
         <Clock />
         <Environment />
         <PaletteRig />
@@ -206,6 +264,7 @@ export function Viewport({ burstKey }: { burstKey: number }) {
           <HeroShapes />
           <ExperienceShape />
           <StackBadges />
+          <Precompile />
         </Suspense>
         <ContactBurst burstKey={burstKey} />
         <PostFX />

@@ -18,7 +18,7 @@ function CharLine({ text, grad }: { text: string; grad: boolean }) {
       {Array.from(text).map((char, i) => (
         <span
           key={i}
-          className={`hero-char inline-block will-change-transform ${grad ? 'grad-char' : ''}`}
+          className={`hero-char inline-block ${grad ? 'grad-char' : ''}`}
         >
           {/* a non-breaking space keeps words from collapsing, since every
               character is its own inline-block box */}
@@ -82,7 +82,7 @@ export function Hero() {
       gsap
         .timeline({
           scrollTrigger: {
-            trigger: '#stage-hero',
+            trigger: root.current,
             start: 'top top',
             end: 'bottom bottom',
             scrub: 0.7,

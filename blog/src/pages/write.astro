@@ -1,0 +1,126 @@
+---
+import Base from '../layouts/Base.astro'
+
+Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+Astro.response.headers.set('Cache-Control', 'no-store')
+
+const field =
+  'w-full rounded-xl border border-white/12 bg-white/[0.04] px-3.5 py-2.5 text-[0.95rem] text-white placeholder:text-white/30 outline-none transition-colors focus:border-[#f7a1c6]/60'
+const label = 'mb-1.5 block text-sm text-white/60'
+const primary =
+  'rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#14091f] transition-opacity hover:opacity-90 disabled:opacity-40'
+const secondary =
+  'rounded-full border border-white/15 px-4 py-2 text-sm text-white/75 transition-colors hover:border-white/35 hover:text-white disabled:opacity-40'
+const panel = 'rounded-3xl border border-white/12 bg-white/[0.04] p-5 md:p-7'
+---
+
+<Base title="Editor — Ruby" noindex>
+  <section class="pb-8 pt-4 md:pt-8">
+    <p class="eyebrow mb-3">Editor</p>
+    <h1 class="font-display text-[clamp(2rem,5vw,3rem)] font-extrabold tracking-[-0.03em]">
+      Write<span class="grad-text">.</span>
+    </h1>
+  </section>
+
+  <p id="status" role="status" aria-live="polite" class="mb-6 min-h-6 text-sm text-white/70"></p>
+
+  <form id="login" hidden class={`${panel} grid max-w-md gap-4`}>
+    <h2 class="font-display text-xl font-bold">Staff sign in</h2>
+    <div>
+      <label class={label} for="login-username">Username</label>
+      <input
+        id="login-username"
+        autocomplete="username"
+        autocapitalize="none"
+        spellcheck="false"
+        required
+        class={field}
+      />
+    </div>
+    <div>
+      <label class={label} for="login-password">Password</label>
+      <input id="login-password" type="password" autocomplete="current-password" required class={field} />
+    </div>
+    <div><button type="submit" data-sound-quiet class={primary}>Sign in</button></div>
+  </form>
+
+  <div id="workspace" hidden class="grid gap-6">
+    <div class={`${panel} flex flex-wrap items-center gap-2`}>
+      <span class="mr-2 text-sm text-white/50">Posts</span>
+      <div id="post-list" class="flex flex-wrap gap-2"></div>
+      <span class="grow"></span>
+      <span id="signed-in-as" class="mr-1 text-sm text-white/45"></span>
+      <button type="button" id="new-post" class={secondary}>New post</button>
+      <button type="button" id="sign-out" class={secondary}>Sign out</button>
+    </div>
+
+    <form id="post-form" class={`${panel} grid gap-4`}>
+      <div class="grid gap-4 sm:grid-cols-[1fr_14rem]">
+        <div>
+          <label class={label} for="post-title">Title</label>
+          <input id="post-title" required class={field} />
+        </div>
+        <div>
+          <label class={label} for="post-slug">Address</label>
+          <input id="post-slug" required pattern="[a-z0-9][a-z0-9\-]*" class={field} />
+        </div>
+      </div>
+      <div>
+        <label class={label} for="post-description">Short description</label>
+        <input id="post-description" required class={field} />
+      </div>
+      <div class="grid gap-4 sm:grid-cols-[12rem_1fr_auto] sm:items-end">
+        <div>
+          <label class={label} for="post-date">Date</label>
+          <input id="post-date" type="date" required class={field} />
+        </div>
+        <div>
+          <label class={label} for="post-cover">Cover image (optional, under 8 MB)</label>
+          <input
+            id="post-cover"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            class={`${field} file:mr-3 file:rounded-full file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-white/80`}
+          />
+        </div>
+        <label class="flex items-center gap-2 pb-2.5 text-sm text-white/70">
+          <input id="post-draft" type="checkbox" class="h-4 w-4 accent-[#f7a1c6]" /> Draft
+        </label>
+      </div>
+      <p id="cover-current" class="-mt-2 text-xs text-white/40"></p>
+
+      <div class="grid gap-4 lg:grid-cols-2">
+        <div>
+          <label class={label} for="post-body">Post (Markdown)</label>
+          <textarea id="post-body" rows="18" required class={`${field} font-mono text-sm leading-relaxed`}></textarea>
+        </div>
+        <div>
+          <span class={label}>Preview</span>
+          <div
+            id="preview"
+            class="prose prose-invert max-w-none prose-code:before:content-none prose-code:after:content-none min-h-[18rem] rounded-xl border border-white/10 bg-black/20 p-4"
+          >
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="submit" id="publish" data-sound-quiet class={primary}>Publish</button>
+        <button
+          type="button"
+          id="delete-post"
+          data-sound-quiet
+          hidden
+          class={`${secondary} hover:border-red-400/60 hover:text-red-300`}
+        >
+          Delete post
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    import { startEditor } from '../scripts/editor'
+    startEditor()
+  </script>
+</Base>
